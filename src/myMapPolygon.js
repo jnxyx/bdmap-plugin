@@ -2,6 +2,8 @@
  * 该例子提供基于多边形重叠合并算法 
  * 基于Baidu Map API
  *
+ * Source:https://github.com/jnxyx/bdmap-plugin/
+ *
  * @author arvin
  */
 
