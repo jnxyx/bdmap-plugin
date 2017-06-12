@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+    body,
+    html,
+    #allmap {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=DqOj3bXcrjmDUyao1spmjYXT"></script>
+    <title>添加行政区划</title>
+</head>
+
+<body>
+    <div id="allmap"></div>
+</body>
+
+</html>
+<script type="text/javascript">
+// 百度地图API功能
+var map = new BMap.Map("allmap");
+map.centerAndZoom(new BMap.Point(116.403765, 39.914850), 7);
+map.enableScrollWheelZoom();
+
+function getBoundary() {
+    var bdary = new BMap.Boundary();
+    bdary.get("北京", function(rs) { //获取行政区域
+        map.clearOverlays(); //清除地图覆盖物           
+
+        var start = rs.boundaries[0].split(';')[0];
+        console.log(rs.boundaries[0])
+            //4.自定义外围边框点的集合
+        var EN_JW = "170.672126, 81.291804;"; //东北角
+        var NW_JW = "-169.604276,  81.291804;"; //西北角
+        var WS_JW = "-169.604276, -68.045308;"; //西南角
+        var SE_JW = "170.672126, -68.045308;"; //东南角
+        var ply1 = new BMap.Polygon(SE_JW + rs.boundaries[0] + ';' + SE_JW + EN_JW + NW_JW + WS_JW + SE_JW, {
+            strokeColor: "none",
+            fillColor: "rgba(0,0,0,0.8)",
+            strokeOpacity: 1,
+            fillOpacity: 1
+        });
+        map.addOverlay(ply1);
+        var ply = new BMap.Polygon(rs.boundaries[0], {
+            strokeWeight: 2,
+            strokeColor: "#ff0000",
+            fillColor: ""
+        });
+        map.addOverlay(ply);
+        map.setViewport(ply.getPath()); //调整视野
+    });
+}
+setTimeout(function() {
+    getBoundary();
+}, 2000);
+</script>

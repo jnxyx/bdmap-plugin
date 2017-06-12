@@ -145,8 +145,8 @@ var BMapLib = window.BMapLib = BMapLib || {};
             var pointItem = pointArray1[i];
             pointItem.index = i;
             pointItem.type = 1;
-            pointItem.prev = pointArray1[(i - 1) % pointArray1.length];
-            pointItem.next = pointArray1[(i + 1) % pointArray1.length];
+            pointItem.prev = pointArray1[(pointArray1.length + i - 1) % pointArray1.length];
+            pointItem.next = pointArray1[(pointArray1.length + i + 1) % pointArray1.length];
             if (this.isPointInPolygon(pointItem, polygon2)) {
                 pointItem.cancle = true;
             }
@@ -156,8 +156,8 @@ var BMapLib = window.BMapLib = BMapLib || {};
             var pointItem = pointArray2[i];
             pointItem.index = i;
             pointItem.type = 2;
-            pointItem.prev = pointArray2[(i - 1) % pointArray1.length];
-            pointItem.next = pointArray2[(i + 1) % pointArray1.length];
+            pointItem.prev = pointArray2[(pointArray2.length + i - 1) % pointArray2.length];
+            pointItem.next = pointArray2[(pointArray2.length + i + 1) % pointArray2.length];
             if (this.isPointInPolygon(pointItem, polygon1)) {
                 pointItem.cancle = true;
             }
@@ -181,7 +181,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
                 point2Prev = point2Next;
             }
 
-            point1Prev = point1Next；
+            point1Prev = point1Next;
         }
 
         if (!crossPoints.length) {
@@ -189,10 +189,10 @@ var BMapLib = window.BMapLib = BMapLib || {};
         } else {
             var concatPolygon = [];
             getNextPoint(pointArray1[0], concatPolygon, crossPoints);
-
             concatPolygon.push(copyPoint(concatPolygon[0]));
+            concatPolygon = stringfyPolygon(concatPolygon)
 
-            return concatPolygon;
+            return [concatPolygon];
         }
 
     }
@@ -200,10 +200,10 @@ var BMapLib = window.BMapLib = BMapLib || {};
     function mapEquationsSet(points1, points2) {
         // 平行
         var k1, k2, b1, b2;
-        var minlat1 = Math.min(points1[0].lat, points1[0].lat);
-        var maxlat1 = Math.max(points1[0].lat, points1[0].lat);
-        var minlat2 = Math.min(points2[0].lat, points2[0].lat);
-        var maxlat2 = Math.max(points2[0].lat, points2[0].lat);
+        var minlat1 = Math.min(points1[0].lat, points1[1].lat);
+        var maxlat1 = Math.max(points1[0].lat, points1[1].lat);
+        var minlat2 = Math.min(points2[0].lat, points2[1].lat);
+        var maxlat2 = Math.max(points2[0].lat, points2[1].lat);
 
         // 水平平行
         if (points1[0].lng == points1[1].lng) {
@@ -275,6 +275,8 @@ var BMapLib = window.BMapLib = BMapLib || {};
                 lat = k2 * points1[0].lng + b2;
                 if (lat < minlat1 || lat > maxlat1) {
                     return false;
+                } else if (lat < minlat2 || lat > maxlat2) {
+                    return false;
                 } else {
                     var p1 = new BMap.Point(lng, lat);
                     p1.concat = [points1[0], points1[1], points2[0], points2[1]];
@@ -290,6 +292,8 @@ var BMapLib = window.BMapLib = BMapLib || {};
             lng = points2[0].lng;
             lat = k1 * points1[0].lng + b1;
             if (lat < minlat2 || lat > maxlat2) {
+                return false;
+            } else if (lat < minlat1 || lat > maxlat1) {
                 return false;
             } else {
                 var p1 = new BMap.Point(lng, lat);
@@ -369,6 +373,13 @@ var BMapLib = window.BMapLib = BMapLib || {};
         } else {
             var lat, lng;
             lng = (b2 - b1) / (k1 - k2);
+            lat = k1 * lng + b1;
+            if (lat < minlat1 || lat > maxlat1) {
+                return false;
+            }
+            if (lat < minlat2 || lat > maxlat2) {
+                return false;
+            }
             var p1 = new BMap.Point(lng, lat);
             p1.concat = [points1[0], points1[1], points2[0], points2[1]];
             return [p1];
@@ -392,7 +403,9 @@ var BMapLib = window.BMapLib = BMapLib || {};
     function getNextPoint(bdPoint, concatPolygon, crossPoints, prev) {
         if (!bdPoint.cancle) {
             concatPolygon.push(copyPoint(bdPoint));
-            bdPoint.cancle == true;
+            bdPoint.cancle = true;
+        } else {
+            return;
         }
 
         // crossPoint    > 
@@ -439,7 +452,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
         var pointers = [];
         for (var i = crossPoints.length - 1; i >= 0; i--) {
             var crossPoint = crossPoints[i];
-            if (crossPoint.concat.indexOf(point) != -1) {
+            if (crossPoint.concat.indexOf(point) != -1 && !crossPoint.cancle) {
                 pointers.push(crossPoint);
             }
         }
@@ -472,6 +485,15 @@ var BMapLib = window.BMapLib = BMapLib || {};
         }
 
         return returnPoints;
+    }
+
+    function stringfyPolygon(polygon) {
+        var array = [];
+        for (var i = 0; i <= polygon.length - 1; i++) {
+            var item = polygon[i];
+            array.push(item.lng + ',' + item.lat);
+        }
+        return array.join(';');
     }
 
 })();

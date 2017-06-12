@@ -16,6 +16,7 @@
     }
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=DqOj3bXcrjmDUyao1spmjYXT"></script>
+    <script type="text/javascript" src="../src/myMapPolygon.js"></script>
     <title>添加行政区划</title>
 </head>
 
@@ -27,8 +28,54 @@
 <script type="text/javascript">
 // 百度地图API功能
 var map = new BMap.Map("allmap");
-map.centerAndZoom(new BMap.Point(116.403765, 39.914850), 7);
+map.centerAndZoom(new BMap.Point(116.403765, 39.914850), 14);
 map.enableScrollWheelZoom();
 
+// map.addEventListener('tilesloaded', function() {
+    var polygon1 = "116.387622,39.923144;116.416655,39.910969;116.415649,39.902557;116.385897,39.902224";
+    polygon1 = new BMap.Polygon(polygon1, {
+        strokeWeight: 1,
+        strokeColor: "#ff0000",
+        fillColor: ""
+    });
+    var polygon2 = "116.413205,39.927239;116.397826,39.90787;116.402713,39.898793;116.441376,39.898018";
+    polygon2 = new BMap.Polygon(polygon2, {
+        strokeWeight: 1,
+        strokeColor: "#ff0000",
+        fillColor: ""
+    });
+    map.addOverlay(polygon1);
+    map.addOverlay(polygon2);
+    var mergeStr = window.BMapLib.polygonCtrl.mergePolygon(polygon1, polygon2);
+    mergeStr = mergeStr[0];
+    var polygonMerge = new BMap.Polygon(mergeStr, {
+        strokeWeight: 2,
+        strokeColor: "#000000",
+        fillColor: ""
+    });
+    map.addOverlay(polygonMerge);
 
+    first = mergeStr.split(';')[0];
+    var bounds = getBounds(map);
+    var polygonMergeShadow = new BMap.Polygon(bounds[0] + ';' + mergeStr + ';' + bounds.join(';'), {
+        strokeColor: "none",
+        fillColor: "rgba(0,0,0,0.8)",
+        strokeOpacity: 1,
+        fillOpacity: 1
+    });
+    map.addOverlay(polygonMergeShadow);
+// });
+
+function getBounds(map) {
+    var bounds = map.getBounds();
+    var NE = bounds.getNorthEast();
+    var SW = bounds.getSouthWest();
+    var NW = NE.lng + ',' + SW.lat;
+    var SE = SW.lng + ',' + NE.lat;
+
+    NE = NE.lng + ',' + NE.lat;
+    SW = SW.lng + ',' + SW.lat;
+
+    return [NE, NW, SW, SE, NE];
+}
 </script>
