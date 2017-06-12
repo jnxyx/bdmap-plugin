@@ -143,6 +143,10 @@ var BMapLib = window.BMapLib = BMapLib || {};
 
         for (var i = pointArray1.length - 1; i >= 0; i--) {
             var pointItem = pointArray1[i];
+            pointItem.index = i;
+            pointItem.type = 1;
+            pointItem.prev = pointArray1[(i - 1) % pointArray1.length];
+            pointItem.next = pointArray1[(i + 1) % pointArray1.length];
             if (this.isPointInPolygon(pointItem, polygon2)) {
                 pointItem.cancle = true;
             }
@@ -150,6 +154,10 @@ var BMapLib = window.BMapLib = BMapLib || {};
 
         for (var i = pointArray2.length - 1; i >= 0; i--) {
             var pointItem = pointArray2[i];
+            pointItem.index = i;
+            pointItem.type = 2;
+            pointItem.prev = pointArray2[(i - 1) % pointArray1.length];
+            pointItem.next = pointArray2[(i + 1) % pointArray1.length];
             if (this.isPointInPolygon(pointItem, polygon1)) {
                 pointItem.cancle = true;
             }
@@ -168,7 +176,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
                 // 解方程得出交叉点
                 var crossPoint = mapEquationsSet([point1Prev, point1Next], [point2Prev, point2Next]);
                 if (crossPoint) {
-                    crossPoints.push(crossPoint);
+                    crossPoints = crossPoints.concat(crossPoint);
                 }
                 point2Prev = point2Next;
             }
@@ -176,23 +184,294 @@ var BMapLib = window.BMapLib = BMapLib || {};
             point1Prev = point1Next；
         }
 
-        return [];
+        if (!crossPoints.length) {
+            return [polygon1, polygon2]
+        } else {
+            var concatPolygon = [];
+            getNextPoint(pointArray1[0], concatPolygon, crossPoints);
+
+            concatPolygon.push(copyPoint(concatPolygon[0]));
+
+            return concatPolygon;
+        }
+
     }
 
     function mapEquationsSet(points1, points2) {
         // 平行
         var k1, k2, b1, b2;
+        var minlat1 = Math.min(points1[0].lat, points1[0].lat);
+        var maxlat1 = Math.max(points1[0].lat, points1[0].lat);
+        var minlat2 = Math.min(points2[0].lat, points2[0].lat);
+        var maxlat2 = Math.max(points2[0].lat, points2[0].lat);
+
         // 水平平行
-        if (points1[0].lng == points1[1].lng && points2[0].lng == points2[1].lng) {
-            if (points1[0].lng == points2[0].lng) {
-            	
-            } else {
+        if (points1[0].lng == points1[1].lng) {
+            if (points2[0].lng == points2[1].lng && points1[0].lng == points2[0].lng) {
+                if (points1[0].lat < minlat2) {
+                    if (points1[1].lat < minlat2) {
+                        return false;
+                    } else if (points1[1].lat < maxlat2) {
+                        var p1 = new BMap.Point(points1[1].lng, points1[1].lat);
+                        var p2;
+                        if (points2[0].lat < points2[1].lat) {
+                            p2 = new BMap.Point(points2[0].lng, points2[0].lat);
+                        } else {
+                            p2 = new BMap.Point(points2[1].lng, points2[1].lat);
+                        }
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        p2.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1, p2];
+                    } else {
+                        var p1 = new BMap.Point(points2[0].lng, points2[0].lat);
+                        var p2 = new BMap.Point(points2[1].lng, points2[1].lat);
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        p2.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1, p2];
+                    }
+                } else if (points1[0].lat <= maxlat2) {
+                    var p1 = new BMap.Point(points1[0].lng, points1[0].lat);
+                    if (points1[1].lat < minlat2) {
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1];
+                    } else if (points1[1].lat < maxlat2) {
+                        var p2 = new BMap.Point(points1[1].lng, points1[1].lat);
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        p2.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1, p2];
+                    } else {
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1];
+                    }
+                } else {
+                    if (points1[1].lat < minlat2) {
+                        var p1 = new BMap.Point(points2[0].lng, points2[0].lat);
+                        var p2 = new BMap.Point(points2[1].lng, points2[1].lat);
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        p2.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1, p2];
+                    } else if (points1[1].lat < maxlat2) {
+                        var p1 = new BMap.Point(points1[1].lng, points1[1].lat);
+                        var p2;
+                        if (points2[0].lat < points2[1].lat) {
+                            p2 = new BMap.Point(points2[1].lng, points2[1].lat);
+                        } else {
+                            p2 = new BMap.Point(points2[0].lng, points2[0].lat);
+                        }
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        p2.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1, p2];
+                    } else {
+                        return false;
+                    }
+                }
+            } else if (points2[0].lng == points2[1].lng && points1[0].lng != points2[0].lng) {
                 return false;
+            } else {
+                k2 = (points2[0].lat - points2[1].lat) / (points2[0].lng - points2[1].lng);
+                b2 = points2[0].lat - k2 * points2[0].lng;
+                var lng, lat;
+                lng = points1[0].lng;
+                lat = k2 * points1[0].lng + b2;
+                if (lat < minlat1 || lat > maxlat1) {
+                    return false;
+                } else {
+                    var p1 = new BMap.Point(lng, lat);
+                    p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                    return [p1];
+                }
             }
         }
-        var k1 = (points1[0].lat - points1[1].lat) / (points1[0].lng - points1[1].lng);
-        var k2 = (points2[0].lat - points2[1].lat) / (points2[0].lng - points2[1].lng);
+
+        if (points2[0].lng == points2[1].lng) {
+            k1 = (points1[0].lat - points1[1].lat) / (points1[0].lng - points1[1].lng);
+            b1 = points1[0].lat - k1 * points1[0].lng;
+            var lng, lat;
+            lng = points2[0].lng;
+            lat = k1 * points1[0].lng + b1;
+            if (lat < minlat2 || lat > maxlat2) {
+                return false;
+            } else {
+                var p1 = new BMap.Point(lng, lat);
+                p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                return [p1];
+            }
+        }
+
+        k1 = (points1[0].lat - points1[1].lat) / (points1[0].lng - points1[1].lng);
+        k2 = (points2[0].lat - points2[1].lat) / (points2[0].lng - points2[1].lng);
         // 交叉
+        b1 = points1[0].lat - k1 * points1[0].lng;
+        b2 = points2[0].lat - k2 * points2[0].lng;
+
+        if (k1 == k2) {
+            if (b1 != b2) {
+                return false;
+            } else {
+                if (points1[0].lat < minlat2) {
+                    if (points1[1].lat < minlat2) {
+                        return false;
+                    } else if (points1[1].lat < maxlat2) {
+                        var p1 = new BMap.Point(points1[1].lng, points1[1].lat);
+                        var p2;
+                        if (points2[0].lat < points2[1].lat) {
+                            p2 = new BMap.Point(points2[0].lng, points2[0].lat);
+                        } else {
+                            p2 = new BMap.Point(points2[1].lng, points2[1].lat);
+                        }
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        p2.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1, p2];
+                    } else {
+                        var p1 = new BMap.Point(points2[0].lng, points2[0].lat);
+                        var p2 = new BMap.Point(points2[1].lng, points2[1].lat);
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        p2.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1, p2];
+                    }
+                } else if (points1[0].lat <= maxlat2) {
+                    var p1 = new BMap.Point(points1[0].lng, points1[0].lat);
+                    if (points1[1].lat < minlat2) {
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1];
+                    } else if (points1[1].lat < maxlat2) {
+                        var p2 = new BMap.Point(points1[1].lng, points1[1].lat);
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        p2.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1, p2];
+                    } else {
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1];
+                    }
+                } else {
+                    if (points1[1].lat < minlat2) {
+                        var p1 = new BMap.Point(points2[0].lng, points2[0].lat);
+                        var p2 = new BMap.Point(points2[1].lng, points2[1].lat);
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        p2.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1, p2];
+                    } else if (points1[1].lat < maxlat2) {
+                        var p1 = new BMap.Point(points1[1].lng, points1[1].lat);
+                        var p2;
+                        if (points2[0].lat < points2[1].lat) {
+                            p2 = new BMap.Point(points2[1].lng, points2[1].lat);
+                        } else {
+                            p2 = new BMap.Point(points2[0].lng, points2[0].lat);
+                        }
+                        p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        p2.concat = [points1[0], points1[1], points2[0], points2[1]];
+                        return [p1, p2];
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            var lat, lng;
+            lng = (b2 - b1) / (k1 - k2);
+            var p1 = new BMap.Point(lng, lat);
+            p1.concat = [points1[0], points1[1], points2[0], points2[1]];
+            return [p1];
+        }
+
+    }
+
+    function copyPoint(bdPoint) {
+        return new BMap.Point(bdPoint.lng, bdPoint.lat);
+    }
+
+    /**
+     * [getNextPoint 连接待合并的polygon]
+     *
+     * pyPoint    > pyPoint
+     * pyPoint    > crossPoint
+     * crossPoint > pyPoint
+     * crossPoint > crossPoint
+     * 
+     */
+    function getNextPoint(bdPoint, concatPolygon, crossPoints, prev) {
+        if (!bdPoint.cancle) {
+            concatPolygon.push(copyPoint(bdPoint));
+            bdPoint.cancle == true;
+        }
+
+        // crossPoint    > 
+        if (bdPoint.concat) {
+            var concatPoints = bdPoint.concat;
+            concatPoints = getLeasePoints(concatPoints);
+            if (concatPoints.length == 0) return;
+            // > pyPoint
+            for (var i = concatPoints.length - 1; i >= 0; i--) {
+                var pointItem = concatPoints[i];
+                var pointItemNear = getNearPointInLine(pointItem, crossPoints);
+                if (pointItemNear == bdPoint) {
+                    getNextPoint(pointItem, concatPolygon, crossPoints, bdPoint);
+                    return;
+                }
+            }
+            // > crossPoint
+        }
+
+        // pyPoint       > 
+        else {
+            var pointers = bePointerInCrossPoints(bdPoint, crossPoints);
+            // > crossPoint
+            if (pointers.length) {
+                nearPoint = getNearPointInLine(bdPoint, pointers);
+                if (!nearPoint.cancle) {
+                    getNextPoint(nearPoint, concatPolygon, crossPoints, bdPoint);
+                }
+                return;
+            }
+            // > pyPoint
+            else {
+                if (bdPoint.prev.cancle) {
+                    getNextPoint(bdPoint.next, concatPolygon, crossPoints, bdPoint);
+                } else {
+                    getNextPoint(bdPoint.prev, concatPolygon, crossPoints, bdPoint);
+                }
+            }
+        }
+    }
+
+    // 在剩余交叉点集中存在指向
+    function bePointerInCrossPoints(point, crossPoints) {
+        var pointers = [];
+        for (var i = crossPoints.length - 1; i >= 0; i--) {
+            var crossPoint = crossPoints[i];
+            if (crossPoint.concat.indexOf(point) != -1) {
+                pointers.push(crossPoint);
+            }
+        }
+        return pointers;
+    }
+
+    // 获取线段离指定端点最近的点
+    function getNearPointInLine(point, pointers) {
+        var nearPoint = pointers[0];
+        for (var i = 1; i < pointers.length; i++) {
+            var nearAbso = Math.abs(point.lat - nearPoint.lat);
+            var abso = Math.abs(point.lat - pointers[i].lat);
+            if (nearAbso <= abso) {
+                continue;
+            } else {
+                nearPoint = pointers[i];
+            }
+        }
+        return nearPoint;
+    }
+
+    // 获取剩下点、或者移除待删点
+    function getLeasePoints(points) {
+        if (points.length == 0) return [];
+        var returnPoints = [];
+        for (var i = points.length - 1; i >= 0; i--) {
+            if (!points[i].cancle) {
+                returnPoints.push(points[i]);
+            }
+        }
+
+        return returnPoints;
     }
 
 })();
