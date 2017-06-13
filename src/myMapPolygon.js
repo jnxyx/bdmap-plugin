@@ -200,14 +200,13 @@ var BMapLib = window.BMapLib = BMapLib || {};
     }
 
     function mapEquationsSet(points1, points2) {
-        // 平行
+
         var k1, k2, b1, b2;
         var minlat1 = Math.min(points1[0].lat, points1[1].lat);
         var maxlat1 = Math.max(points1[0].lat, points1[1].lat);
         var minlat2 = Math.min(points2[0].lat, points2[1].lat);
         var maxlat2 = Math.max(points2[0].lat, points2[1].lat);
 
-        // 水平平行
         if (points1[0].lng == points1[1].lng) {
             if (points2[0].lng == points2[1].lng && points1[0].lng == points2[0].lng) {
                 if (points1[0].lat < minlat2) {
@@ -306,7 +305,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
 
         k1 = (points1[0].lat - points1[1].lat) / (points1[0].lng - points1[1].lng);
         k2 = (points2[0].lat - points2[1].lat) / (points2[0].lng - points2[1].lng);
-        // 交叉
+
         b1 = points1[0].lat - k1 * points1[0].lng;
         b2 = points2[0].lat - k2 * points2[0].lng;
 
