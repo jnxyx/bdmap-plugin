@@ -133,7 +133,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
      * @param  {[type]} polygon2 [第二个多边形]
      * @return {[type]}          [多边形合并结果集]
      */
-    polygonCtrl.mergePolygon = function(polygon1, polygon2) {
+    polygonCtrl.mergePolygon = function(polygon1, polygon2, isCheckCross) {
 
         if (!(polygon1 instanceof BMap.Polygon) ||
             !(polygon2 instanceof BMap.Polygon)) {
@@ -178,12 +178,19 @@ var BMapLib = window.BMapLib = BMapLib || {};
                 // 解方程得出交叉点
                 var crossPoint = mapEquationsSet([point1Prev, point1Next], [point2Prev, point2Next]);
                 if (crossPoint) {
+                    if (isCheckCross) {
+                        return true;
+                    }
                     crossPoints = crossPoints.concat(crossPoint);
                 }
                 point2Prev = point2Next;
             }
 
             point1Prev = point1Next;
+        }
+
+        if (isCheckCross) {
+            return false;
         }
 
         if (!crossPoints.length) {
