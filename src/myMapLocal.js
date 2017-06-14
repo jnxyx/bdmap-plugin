@@ -12,7 +12,7 @@
                 renderOptions: {},
                 onSearchComplete: function(localResult) {
                     var service = localResult.keyword;
-                    localResult = localResult.ur;
+                    localResult = localResult.ur || localResult.vr;
                     var text = '',
                         resultArray = [];
                     if (!localResult || localResult.length == 0) {
