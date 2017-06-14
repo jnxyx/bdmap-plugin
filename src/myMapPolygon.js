@@ -150,6 +150,9 @@ var BMapLib = window.BMapLib = BMapLib || {};
             pointItem.prev = pointArray1[(pointArray1.length + i - 1) % pointArray1.length];
             pointItem.next = pointArray1[(pointArray1.length + i + 1) % pointArray1.length];
             if (this.isPointInPolygon(pointItem, polygon2)) {
+                if (isCheckCross) {
+                    return true;
+                }
                 pointItem.cancle = true;
             }
         }
@@ -161,6 +164,9 @@ var BMapLib = window.BMapLib = BMapLib || {};
             pointItem.prev = pointArray2[(pointArray2.length + i - 1) % pointArray2.length];
             pointItem.next = pointArray2[(pointArray2.length + i + 1) % pointArray2.length];
             if (this.isPointInPolygon(pointItem, polygon1)) {
+                if (isCheckCross) {
+                    return true;
+                }
                 pointItem.cancle = true;
             }
         }
@@ -205,6 +211,8 @@ var BMapLib = window.BMapLib = BMapLib || {};
         }
 
     }
+
+    polygonCtrl.mapEquationsSet = mapEquationsSet;
 
     function mapEquationsSet(points1, points2) {
 
