@@ -212,6 +212,21 @@ var BMapLib = window.BMapLib = BMapLib || {};
 
     }
 
+    /**
+     * [getPolygonCenter 获取多边形外接矩形中心点]
+     * @param  {[type]} polygon [多边形参数]
+     * @return {[type]}         [中心点返回值]
+     */
+    polygonCtrl.getPolygonCenter = function(polygon) {
+        if (!(polygon instanceof BMap.Polygon)) {
+            return [];
+        }
+        var pts = polygon.getBounds(); //获取多边形点
+        var sw = bounds.getSouthWest(); //西南脚点
+        var ne = bounds.getNorthEast(); //东北脚点
+        return new BMap.Point((sw.lng + ne.lng) / 2, (sw.lat + ne.lat) / 2);
+    }
+
     polygonCtrl.mapEquationsSet = mapEquationsSet;
 
     function mapEquationsSet(points1, points2) {
