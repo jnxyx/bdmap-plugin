@@ -31,7 +31,10 @@ var map = new BMap.Map("allmap");
 map.centerAndZoom(new BMap.Point(116.403765, 39.914850), 14);
 map.enableScrollWheelZoom();
 
-// map.addEventListener('tilesloaded', function() {
+setPath("170.672126, 81.291804;116.192582,40.063437;116.18712,40.018142;116.281981,40.016152;116.286868,40.059019;116.246911,40.090158;116.216441,40.080884;116.192582,40.063437;116.192582,40.063437;116.081911,39.981884;116.191719,39.929231;116.05029,39.897797;116.081911,39.981884;116.081911,39.981884;116.192582,40.063437;170.672126, 81.291804;-169.604276,  81.291804;-169.604276, -68.045308;170.672126, -68.045308;170.672126, 81.291804;");
+
+// map.addEventListener('tilesloaded', 
+function init() {
     var polygon1 = "116.387622,39.923144;116.416655,39.910969;116.415649,39.902557;116.385897,39.902224";
     polygon1 = new BMap.Polygon(polygon1, {
         strokeWeight: 1,
@@ -64,7 +67,18 @@ map.enableScrollWheelZoom();
         fillOpacity: 1
     });
     map.addOverlay(polygonMergeShadow);
-// });
+}
+// );
+// 
+function setPath(path){
+    var polygonMergeShadow = new BMap.Polygon(path, {
+        strokeColor: "none",
+        fillColor: "rgba(0,0,0,0.8)",
+        strokeOpacity: 1,
+        fillOpacity: 1
+    });
+    map.addOverlay(polygonMergeShadow);
+}
 
 function getBounds(map) {
     var bounds = map.getBounds();
