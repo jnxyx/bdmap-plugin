@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>location测试</title>
+    <script src="../src/jquery-2.1.4.js"></script>
+    <script src="http://api.map.baidu.com/api?v=2.0&amp;ak=DqOj3bXcrjmDUyao1spmjYXT"></script>
+    <script src="../src/myMapLocation/myLocation.js"></script>
+    <link rel="stylesheet" type="text/css" href="../src/myMapLocation/myLocation.css">
+    <style type="text/css">
+    .location {
+        width: 300 px;
+        height: 300 px;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="location" class="location"></div>
+</body>
+<script type="text/javascript">
+$('#location').myLocation({
+    serviceable: true,
+    point: {
+        prolng: 116,
+        prolat: 46
+    }
+})
+</script>
+
+</html>

@@ -1,0 +1,319 @@
+.mybmap {
+    position: relative;
+    width: 1000px;
+    height: 433px;
+}
+
+.build-map-fc {
+    height: 43px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.build-map-fc .build-map-ico {
+    bottom: 10px;
+    left: 0px;
+    z-index: 1;
+}
+
+.build-map-fc .build-map-ico span {
+    width: 92px;
+    height: 33px;
+    float: left;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.build-map-fc .build-map-ico .span1 {
+    background: url(img/building_07.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span1.current {
+    background: url(img/building_08.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span2 {
+    background: url(img/building_05.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span2.current {
+    background: url(img/building_06.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span3 {
+    background: url(img/building_13.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span3.current {
+    background: url(img/building_14.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span4 {
+    background: url(img/building_15.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span4.current {
+    background: url(img/building_16.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span5 {
+    background: url(img/building_17.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span5.current {
+    background: url(img/building_18.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span6 {
+    background: url(img/building_09.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span6.current {
+    background: url(img/building_10.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span7 {
+    background: url(img/building_03.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span7.current {
+    background: url(img/building_04.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span8 {
+    background: url(img/building_11.png) no-repeat;
+}
+
+.build-map-fc .build-map-ico .span8.current {
+    background: url(img/building_12.png) no-repeat;
+}
+
+
+/*///////////////////地图图标样式///////////////////*/
+
+.point {
+    position: absolute;
+}
+
+.loc-point {
+    width: 39px;
+    height: 44px;
+    font-weight: bold;
+    color: #f14651;
+    text-align: center;
+    cursor: pointer;
+    z-index: 99;
+    background: url(img/map/xzl_point.png?_spriter) no-repeat;
+}
+
+
+/*///////////////////地图蒙版样式///////////////////*/
+
+#location_poup {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #000000;
+    opacity: 0.5;
+    display: none;
+    z-index: 9999;
+    filter: alpha(opacity=50);
+}
+
+#location_center {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /*width: 800px;*/
+    /*height: 400px;*/
+    display: none;
+    z-index: 10000;
+    /*margin: 100px auto auto auto;*/
+}
+
+#location_content {
+    position: relative;
+    width: 800px;
+    /*height: 400px;*/
+    top: 50%;
+    left: 50%;
+    margin-top: -220px;
+    margin-left: -400px;
+}
+
+#location_close {
+    background-color: #ef4224;
+    width: 800px;
+    height: 40px;
+    line-height: 40px;
+    /*text-indent: 300px;*/
+    /*font-weight: bold;*/
+    position: relative;
+}
+
+#location_close div {
+    position: absolute;
+    color: white;
+    font-size: 14px;
+}
+
+#location_close_title {
+    top: 5px;
+    left: 12px;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    /*font-weight: bold;*/
+}
+
+#location_close_body {
+    width: 800px;
+    height: 40px;
+    line-height: 40px;
+    text-indent: 280px;
+}
+
+#location_close_btn {
+    top: 7px;
+    right: 12px;
+    width: 42px;
+    height: 24px;
+    border: solid 1px white;
+    border-radius: 4px;
+    line-height: 24px;
+    /*font-weight: bold;*/
+    /*float: right;*/
+    /*background-color: white;*/
+    text-indent: 6px;
+    cursor: pointer;
+}
+
+#location_close_btn:hover {
+    background-color: #e1261c;
+}
+
+#location_map {
+    width: 800px;
+    height: 400px;
+    position: relative;
+}
+
+#location_show {
+    width: 800px;
+    height: 40px;
+    margin-top: -40px;
+    /*background-color: white;*/
+    position: relative;
+    z-index: 1000;
+    background-color: white;
+    opacity: 0.5;
+}
+
+#location_get {
+    outline: none;
+    display: block;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    position: relative;
+    margin-left: 360px;
+    margin-top: -35px;
+    background-color: #ef4224;
+    color: white;
+    z-index: 1001;
+    font-weight: bold;
+    border: 0;
+    border-radius: 2px;
+    border-bottom: 2px solid #9f3224;
+    cursor: pointer;
+}
+
+#location_get:hover {
+    background-color: #e1261c;
+}
+
+
+/** 去除地图标签框 */
+
+.BMapLabel {
+    width: 0 !important;
+    height: 0 !important;
+    border: none !important;
+}
+
+.loc-point {
+    width: 43px;
+    height: 60px;
+    position: absolute;
+    animation: mymove 0.4s alternate ease-out infinite;
+    -webkit-animation: mymove 0.4s alternate ease-out infinite;
+    background: url(img/marker_logo.png?_spriter) no-repeat;
+}
+
+.point {
+    height: 60px;
+    transform: scale(0.75);
+    -webkit-transform: scale(0.75);
+    margin-top: -30px;
+}
+
+.point:after {
+    width: 43px;
+    height: 60px;
+    content: "";
+    position: absolute;
+    bottom: -37px;
+    animation: pointBot 0.4s alternate ease-out infinite;
+    -webkit-animation: pointBot 0.4s alternate ease-out infinite;
+    background: url(img/marker_bot.png?_spriter) center bottom no-repeat;
+}
+
+
+.BMap_bubble_title p {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 210px;
+    font: bold 14px/16px arial, sans-serif;
+    margin: 0;
+    color: #cc5522;
+}
+
+.BMap_bubble_title p a {
+    margin-left: 5px;
+    font-size: 12px;
+    color: #3d6dcc;
+    font-weight: normal;
+    text-decoration: none;
+}
+
+.infoWindowStyle p {
+    overflow: hidden;
+    width: 210px;
+    font: 12px arial, sans-serif;
+    line-height: 16px;
+}
+
+@keyframes mymove {
+    from {
+        top: 20px;
+    }
+    to {
+        top: 0;
+    }
+}
+
+@keyframes pointBot {
+    from {
+        transform: scale(1.2);
+    }
+    to {
+        transform: scale(0.3);
+    }
+}
